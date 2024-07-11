@@ -3,6 +3,10 @@
 
 FlowToken is a React component library designed to enhance the visual presentation of text streaming from large language models (LLMs). This library offers a variety of animations that make the text appear smoothly and dynamically, providing an engaging user experience.
 
+## Demo
+
+Try the demo here: [Demo link](https://nextjs-14jnykx0r-ephibbs-projects.vercel.app/)
+
 ## Features
 
 FlowToken includes several key features:

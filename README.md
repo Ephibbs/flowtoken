@@ -1,4 +1,4 @@
-`
+```
 
 ______ _             _____     _              
 |  ___| |           |_   _|   | |             
@@ -9,7 +9,7 @@ ______ _             _____     _
                                               
                                               
 
-`
+```
 
 # FlowToken - Smooth Animation Library for LLM Text Streaming
 

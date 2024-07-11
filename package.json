@@ -1,10 +1,10 @@
 {
   "name": "flowtoken",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/components/*.css dist/components",
     "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -24,6 +24,7 @@
     "@storybook/react-webpack5": "^8.2.1",
     "@storybook/test": "^8.2.1",
     "@types/react": "^18.3.3",
+    "gh-pages": "^6.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "storybook": "^8.2.1",

@@ -7,7 +7,7 @@ interface TokenInfo {
 }
 
 interface SmoothTextProps {
-    incomingText: string;
+    content: string;
     windowSize: number;  // Number of tokens to consider for the moving average
     delayMultiplier?: number;  // Multiplier for the delay between tokens
     sep?: string;  // Token separator
@@ -16,7 +16,7 @@ interface SmoothTextProps {
     animationTimingFunction?: string;  // Animation timing function
 }
 
-const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, delayMultiplier=1.1, sep="token", animation="fadeIn", animationDuration="0.5s", animationTimingFunction="ease-in-out" }) => {
+const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize=0, delayMultiplier=1.05, sep="token", animation="fadeIn", animationDuration="1s", animationTimingFunction="ease-in-out" }) => {
     const [tokens, setTokens] = useState<TokenInfo[]>([]);
     const [completedTokens, setCompletedTokens] = useState<string[]>([]);
     const [animatingTokens, setAnimatingTokens] = useState<{ token: string, timestamp: number}[]>([]);
@@ -24,11 +24,11 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
     const timerHandles = useRef<NodeJS.Timeout[]>([]);
     const lastTokenTime = useRef<number>(performance.now());
     const lastDisplayTime = useRef<number>(performance.now());
-    const lastScheduledTime = useRef<number | null>(null);
+    const lastScheduledTime = useRef<number>(0);
 
     useEffect(() => {
-        if (incomingText) {
-            const textToSplit = incomingText.slice(receivedText.current.length);
+        if (content) {
+            const textToSplit = content.slice(receivedText.current.length);
 
             // Split the text and include spaces in the tokens list
             let newTokens: string[] = [];
@@ -49,7 +49,7 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
             setTokens(updatedTokens);
 
             lastTokenTime.current = currentTime;
-            receivedText.current = incomingText;
+            receivedText.current = content;
             // Calculate the average time interval between the last 'windowSize' tokens
             if (windowSize === 0) {
                 setAnimatingTokens(prev => [...prev, ...additionalTokens]);
@@ -78,11 +78,10 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
                 timerHandles.current.push(handle);
             });
         }
-    }, [incomingText]);
+    }, [content]);
 
     useEffect(() => {
         return () => {
-            console.log('Cleanup');
             setCompletedTokens([]);
             setAnimatingTokens([]);
             setTokens([]);
@@ -90,7 +89,7 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
             timerHandles.current.forEach(handle => clearTimeout(handle));
             lastTokenTime.current = performance.now();
             lastDisplayTime.current = performance.now();
-            lastScheduledTime.current = null;
+            lastScheduledTime.current = 0;
         };
     }, []);
 
@@ -112,7 +111,6 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
                     whiteSpace: 'pre',
                     display: 'inline-block',
                 }}
-            // onAnimationEnd={() => handleAnimationEnd(token)}
             >
                 {token}
             </span>
@@ -122,4 +120,4 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize=0, del
     );
 };
 
-export default SmoothText;
+export default SmoothAnimateText;

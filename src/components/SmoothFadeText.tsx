@@ -69,10 +69,10 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize=0, d
             // Schedule each new token for display
             additionalTokens.forEach((tokenInfo, index) => {
                 const delay = Math.max(0, (index + 1) * averageInterval - timeSinceLastDisplay / delayMultiplier) * delayMultiplier;
-                // console.log('Delay:', delay, 'ms');
                 lastScheduledTime.current = Math.max(currentTime + delay, lastScheduledTime.current);
                 const handle = setTimeout(() => {
                     setAnimatingTokens(prev => [...prev, tokenInfo]);
+                    // console.log('Latency:', performance.now() - lastDisplayTime.current, 'ms');
                     lastDisplayTime.current = performance.now();
                 }, delay);
                 timerHandles.current.push(handle);
@@ -98,11 +98,11 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize=0, d
         <span
         >{completedTokens.join('')}</span>
             {
-        animatingTokens.map(({ token, timestamp }) => {
+        animatingTokens.map(({ token, timestamp }, index) => {
             if (token === '\n') return <br key={timestamp} />;
 
             return <span
-                key={timestamp}
+                key={`${timestamp}-${index}`}
                 style={{
                     animationName: animation,
                     animationDuration: animationDuration,

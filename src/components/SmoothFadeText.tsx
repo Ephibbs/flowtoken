@@ -99,7 +99,7 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize=0, d
         >{completedTokens.join('')}</span>
             {
         animatingTokens.map(({ token, timestamp }, index) => {
-            if (token === '\n') return <br key={timestamp} />;
+            if (token === '\n') return <br key={`${timestamp}-${index}`} />; // key={`${timestamp}-${index}`}
 
             return <span
                 key={`${timestamp}-${index}`}
@@ -116,6 +116,7 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize=0, d
             </span>
             })
             }
+            
         </>
     );
 };

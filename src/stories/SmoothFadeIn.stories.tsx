@@ -108,7 +108,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         animation: "fadeIn",
         sep: "token",
         windowSize: 30,
-        delayMultiplier: 1.1,
+        delayMultiplier: 1.4,
         animationDuration: "0.5s",
         animationTimingFunction: "ease-in-out",
     });

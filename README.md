@@ -43,7 +43,7 @@ const App = () => {
       incomingText="Hello, world!"
       windowSize={5}
       delayMultiplier={1.1}
-      sep=" "
+      sep="char"
       animation="fadeIn"
       animationDuration="0.5s"
       animationTimingFunction="ease-in-out"
@@ -71,7 +71,7 @@ export default function Chat() {
         <div key={m.id}>
           {m.role}: <StreamText content={m.content} windowSize={5}
             delayMultiplier={1.1}
-            sep=" "
+            sep="char"
             animation="fadeIn"
             animationDuration="0.5s"
             animationTimingFunction="ease-in-out"

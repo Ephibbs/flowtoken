@@ -8,7 +8,7 @@ interface TokenInfo {
 
 interface SmoothTextProps {
     content: string;
-    windowSize: number;  // Number of tokens to consider for the moving average
+    windowSize?: number;  // Number of tokens to consider for the moving average
     delayMultiplier?: number;  // Multiplier for the delay between tokens
     sep?: string;  // Token separator
     animation?: string;  // Animation name

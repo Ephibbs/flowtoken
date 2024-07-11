@@ -9,31 +9,40 @@ interface RandomTextSenderProps {
     sep?: string;  // Token separator
 }
 
-const Controls = ({ controls, setControls }) => {
+interface Controls {
+    animation: string;
+    sep: string;
+    windowSize: number;
+    delayMultiplier: number;
+    animationDuration: string;
+    animationTimingFunction: string;
+}
+
+const Controls = ({ controls, setControls }: { controls: Controls, setControls: React.Dispatch<React.SetStateAction<Controls>> }) => {
     const { animation, sep, windowSize, delayMultiplier, animationDuration, animationTimingFunction
      } = controls;
 
-    const handleAnimationChange = (e) => {
+    const handleAnimationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setControls({ ...controls, animation: e.target.value });
     };
 
-    const handleSepChange = (e) => {
+    const handleSepChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setControls({ ...controls, sep: e.target.value });
     };
 
-    const handleWindowSizeChange = (e) => {
+    const handleWindowSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setControls({ ...controls, windowSize: parseInt(e.target.value) });
     };
 
-    const handleDelayMultiplierChange = (e) => {
+    const handleDelayMultiplierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setControls({ ...controls, delayMultiplier: parseFloat(e.target.value) });
     };
 
-    const handleAnimationDurationChange = (e) => {
+    const handleAnimationDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setControls({ ...controls, animationDuration: e.target.value });
     };
 
-    const handleAnimationTimingFunctionChange = (e) => {
+    const handleAnimationTimingFunctionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setControls({ ...controls, animationTimingFunction: e.target.value });
     };
 
@@ -149,7 +158,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         <div>
             {/* <FadeInExample /> */}
             <Controls controls={controls} setControls={setControls} />
-            <StreamingFadeInText key={numId} incomingText={currentText} animation={controls.animation} sep={controls.sep} windowSize={controls.windowSize} delayMultiplier={controls.delayMultiplier} animationDuration={controls.animationDuration} animationTimingFunction={controls.animationTimingFunction} />
+            <StreamingFadeInText key={numId} content={currentText} animation={controls.animation} sep={controls.sep} windowSize={controls.windowSize} delayMultiplier={controls.delayMultiplier} animationDuration={controls.animationDuration} animationTimingFunction={controls.animationTimingFunction} />
             {/* <div style={{ marginTop: '1rem' }}>
                 {currentText}
             </div> */}
@@ -204,7 +213,7 @@ export const DefaultChar = () => <RandomTextSender initialText={text} windowSize
 
 // You can add more stories to showcase different props or states
 export const fadeIn = () => <RandomTextSender initialText={text} windowSize={30} animation={"fadeIn"} />;
-export const AllAtOnceFadeIn = () => <StreamingFadeInText incomingText={text} animation={"fadeIn"} />;
+export const AllAtOnceFadeIn = () => <StreamingFadeInText content={text} animation={"fadeIn"} />;
 
 export const blurIn = () => <RandomTextSender initialText={text} windowSize={30} animation={"blurIn"} />;
 export const blurInChar = () => <RandomTextSender initialText={text} windowSize={30} animation={"blurIn"} sep="char" />;

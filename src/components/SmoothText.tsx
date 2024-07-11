@@ -18,7 +18,7 @@ const SmoothText: React.FC<SmoothTextProps> = ({ incomingText, windowSize, delay
     const timerHandles = useRef<NodeJS.Timeout[]>([]);
     const lastTokenTime = useRef<number>(performance.now());
     const lastDisplayTime = useRef<number>(performance.now());
-    const lastScheduledTime = useRef<number | null>(null);
+    const lastScheduledTime = useRef<number>(0);
 
     useEffect(() => {
         // Update the tokens array with new tokens and their arrival times

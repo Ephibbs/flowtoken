@@ -1,10 +1,15 @@
-# TokenFlow - Smooth Animation Library for LLM Text Streaming
+ ____  __    _____  _    _  ____  _____  _  _  ____  _  _ 
+( ___)(  )  (  _  )( \/\/ )(_  _)(  _  )( )/ )( ___)( \( )
+ )__)  )(__  )(_)(  )    (   )(   )(_)(  )  (  )__)  )  ( 
+(__)  (____)(_____)(__/\__) (__) (_____)(_)\_)(____)(_)\_)
 
-TokenFlow is a React component library designed to enhance the visual presentation of text streaming from large language models (LLMs). This library offers a variety of animations that make the text appear smoothly and dynamically, providing an engaging user experience.
+# FlowToken - Smooth Animation Library for LLM Text Streaming
+
+FlowToken is a React component library designed to enhance the visual presentation of text streaming from large language models (LLMs). This library offers a variety of animations that make the text appear smoothly and dynamically, providing an engaging user experience.
 
 ## Features
 
-TokenFlow includes several key features:
+FlowToken includes several key features:
 
 - **Customizable Animations:** A range of animations such as fade, blur-in, drop-in, slide from the left, typewriter effect, word pull-up, flip text, gradual spacing, and more.
 - **Smooth Text Streaming:** Options to control the speed and manner of text appearance to handle the variability in text generation speed.
@@ -12,25 +17,25 @@ TokenFlow includes several key features:
 
 ## Installation
 
-Install TokenFlow using npm:
+Install FlowToken using npm:
 
 ```bash
-npm install tokenflow
+npm install flowtoken
 ```
 
 Or using yarn:
 
 ```bash
-yarn add tokenflow
+yarn add flowtoken
 ```
 
 ## Usage
 
-Here is a simple example of how to use the `SmoothAnimateText` component from TokenFlow:
+Here is a simple example of how to use the `SmoothAnimateText` component from FlowToken:
 
 ```jsx
 import React from 'react';
-import { SmoothAnimateText } from 'tokenflow';
+import { SmoothAnimateText } from 'flowtoken';
 
 const App = () => {
   return (
@@ -99,7 +104,7 @@ export default function Chat() {
 
 ## Animations
 
-TokenFlow supports various CSS animations:
+FlowToken supports various CSS animations:
 - **fadeIn**
 - **blurIn**
 - **typewriter**
@@ -122,4 +127,4 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 
 ## License
 
-TokenFlow is MIT licensed. Please see the LICENSE file for more details.
+FlowToken is MIT licensed. Please see the LICENSE file for more details.

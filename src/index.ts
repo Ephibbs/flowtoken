@@ -1,3 +1,1 @@
-import SmoothText from './components/SmoothText'
-
-export { SmoothText }
+export {default as StreamText} from './components/SmoothFadeText';

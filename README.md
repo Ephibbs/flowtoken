@@ -27,15 +27,15 @@ yarn add flowtoken
 
 ## Usage
 
-Here is a simple example of how to use the `SmoothAnimateText` component from FlowToken:
+Here is a simple example of how to use the `StreamText` component from FlowToken:
 
 ```jsx
 import React from 'react';
-import { SmoothAnimateText } from 'flowtoken';
+import { StreamText } from 'flowtoken';
 
 const App = () => {
   return (
-    <SmoothAnimateText
+    <StreamText
       incomingText="Hello, world!"
       windowSize={5}
       delayMultiplier={1.1}
@@ -56,6 +56,7 @@ export default App;
 'use client'
 
 import { useChat } from 'ai/react'
+import { StreamText } from 'flowtoken';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat()
@@ -64,7 +65,7 @@ export default function Chat() {
     <div>
       {messages.map(m => (
         <div key={m.id}>
-          {m.role}: <SmoothAnimateText content={m.content} windowSize={5}
+          {m.role}: <StreamText content={m.content} windowSize={5}
             delayMultiplier={1.1}
             sep=" "
             animation="fadeIn"

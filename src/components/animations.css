@@ -75,10 +75,10 @@
     transform: translateY(0);
   }
   20% {
-    transform: translateY(-5px);
+    transform: translateY(-10%);
   }
   60% {
-    transform: translateY(-2px);
+    transform: translateY(-5%);
   }
 }
 

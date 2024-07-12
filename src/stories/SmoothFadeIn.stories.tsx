@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SmoothText from '../components/SmoothText'; // Adjust the import path accordingly
-import StreamingFadeInText from '../components/SmoothFadeText';
+import StreamText from '../components/SmoothFadeText';
 
 interface RandomTextSenderProps {
     initialText: string;
@@ -70,7 +70,7 @@ const Controls = ({ controls, setControls }: { controls: Controls, setControls: 
             <label style={{ marginRight: '1rem' }}>
                 Separator:
                 <select value={sep} onChange={handleSepChange}>
-                    <option value="token">Token</option>
+                    <option value="word">Word</option>
                     <option value="char">Character</option>
                 </select>
             </label>
@@ -102,25 +102,31 @@ const Controls = ({ controls, setControls }: { controls: Controls, setControls: 
 const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
     const [currentText, setCurrentText] = useState('');
     const [remainingTokens, setRemainingTokens] = useState<string[]>([]);
-    const [baseLatency, setBaseLatency] = useState<number>(100);
+    const [baseLatency, setBaseLatency] = useState<number>(10);
     const [tokenCount, setTokenCount] = useState<number>(0);
     const [controls, setControls] = useState({
         animation: "fadeIn",
-        sep: "token",
-        windowSize: 30,
+        sep: "char",
+        windowSize: 5,
         delayMultiplier: 1.4,
-        animationDuration: "0.5s",
+        animationDuration: 0.6,
         animationTimingFunction: "ease-in-out",
+        baseLatency: 50,
+        simulateNetworkIssue: false
     });
+    const [slowSection, setSlowSection] = useState<boolean>(false);
     const [numId, setNumId] = useState<number>(0);
 
     // Update base latency every 10 tokens
     useEffect(() => {
-        if (tokenCount > 0 && tokenCount % 10 === 0) {
-            const newBaseLatency = baseLatency + (Math.random() > 0.5 ? 20 : 0); // Randomly choose between 200ms and 800ms
-            setBaseLatency(newBaseLatency);
-            console.log(`Base latency updated to: ${newBaseLatency}ms`);
+        let extra = 0;
+        if (tokenCount > 0 && tokenCount % 5 === 0 && controls.simulateNetworkIssue) {
+            extra = (Math.random() > 0.8 ? 400 : 0); // Randomly choose between 200ms and 800m
         }
+        const newBaseLatency = controls.baseLatency + extra
+        console.log(`Base latency updated to: ${newBaseLatency}ms`);
+        setBaseLatency(newBaseLatency);
+        setSlowSection(newBaseLatency !== controls.baseLatency);
     }, [tokenCount]);
 
     useEffect(() => {
@@ -133,7 +139,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
     useEffect(() => {
         if (remainingTokens.length > 0) {
             // Jitter is up to 100ms more based on windowSize (unused)
-            const jitter = Math.random() * 10;
+            const jitter = Math.random() * 50;
             const networkDelay = baseLatency + jitter;
 
             const timeout = setTimeout(() => {
@@ -144,6 +150,10 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
             }, networkDelay);
 
             return () => clearTimeout(timeout);
+        } else {
+            // reset the text when the animation changes
+            setNumId((prev) => prev + 1);
+            console.log('Animation changed', numId);
         }
     }, [remainingTokens, baseLatency]);
 
@@ -154,14 +164,27 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         setTokenCount(0);
     }, [initialText, numId]);
 
+    const animationDurationString = `${controls.animationDuration}s`;
+
     return (
-        <div>
-            {/* <FadeInExample /> */}
-            <Controls controls={controls} setControls={setControls} />
-            <StreamingFadeInText key={numId} content={currentText} animation={controls.animation} sep={controls.sep} windowSize={controls.windowSize} delayMultiplier={controls.delayMultiplier} animationDuration={controls.animationDuration} animationTimingFunction={controls.animationTimingFunction} />
-            {/* <div style={{ marginTop: '1rem' }}>
-                {currentText}
-            </div> */}
+        <div className="flex flex-col md:flex-row justify-start items-start w-full gap-16">
+            <div className="w-full max-w-80">
+                <h1 className="text-3xl font-bold">FlowToken</h1>
+                <div className="mb-4">
+                    <span className="text-xs mb-4 text-gray-500 mr-2">In development</span>
+                    <a href="https://github.com/Backless-AI/flowtoken" className="text-xs text-blue-500">Github</a>
+                </div>
+                <p className="text-sm mb-4">FlowToken is a text visualization library to animate and smooth streaming LLM token generation.</p>
+                <Controls controls={controls} setControls={setControls} />
+                <div className="h-10 text-red-500">
+                    {slowSection && <p>Simulated Network Issue</p>}
+                </div>
+            </div>
+            <div className="text-sm w-1/2">
+                {currentText.length > 0 &&
+                    <StreamText content={currentText} animation={controls.animation} sep={controls.sep} windowSize={controls.windowSize} delayMultiplier={controls.delayMultiplier} animationDuration={animationDurationString} animationTimingFunction={controls.animationTimingFunction} />
+                }
+            </div>
         </div>
     );
 };

@@ -14,8 +14,10 @@ interface Controls {
     sep: string;
     windowSize: number;
     delayMultiplier: number;
-    animationDuration: string;
+    animationDuration: number;
     animationTimingFunction: string;
+    simulateNetworkIssue: boolean;
+    generationSpeed: number;
 }
 
 const Controls = ({ controls, setControls }: { controls: Controls, setControls: React.Dispatch<React.SetStateAction<Controls>> }) => {
@@ -39,7 +41,7 @@ const Controls = ({ controls, setControls }: { controls: Controls, setControls: 
     };
 
     const handleAnimationDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setControls({ ...controls, animationDuration: e.target.value });
+        setControls({ ...controls, animationDuration: parseFloat(e.target.value) });
     };
 
     const handleAnimationTimingFunctionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -111,23 +113,22 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         delayMultiplier: 1.4,
         animationDuration: 0.6,
         animationTimingFunction: "ease-in-out",
-        baseLatency: 50,
+        generationSpeed: 1,
         simulateNetworkIssue: false
     });
     const [slowSection, setSlowSection] = useState<boolean>(false);
     const [numId, setNumId] = useState<number>(0);
 
-    // Update base latency every 10 tokens
     useEffect(() => {
         let extra = 0;
         if (tokenCount > 0 && tokenCount % 5 === 0 && controls.simulateNetworkIssue) {
-            extra = (Math.random() > 0.8 ? 400 : 0); // Randomly choose between 200ms and 800m
+            extra = (Math.random() > 0.5 ? 400 : 0); // Randomly choose between 200ms and 800m
         }
-        const newBaseLatency = controls.baseLatency + extra
+        const newBaseLatency = 1000 / controls.generationSpeed + extra
         console.log(`Base latency updated to: ${newBaseLatency}ms`);
         setBaseLatency(newBaseLatency);
-        setSlowSection(newBaseLatency !== controls.baseLatency);
-    }, [tokenCount]);
+        setSlowSection(extra > 0);
+    }, [tokenCount, controls]);
 
     useEffect(() => {
         //reset the text when the animation changes
@@ -236,7 +237,7 @@ export const DefaultChar = () => <RandomTextSender initialText={text} windowSize
 
 // You can add more stories to showcase different props or states
 export const fadeIn = () => <RandomTextSender initialText={text} windowSize={30} animation={"fadeIn"} />;
-export const AllAtOnceFadeIn = () => <StreamingFadeInText content={text} animation={"fadeIn"} />;
+export const AllAtOnceFadeIn = () => <StreamText content={text} animation={"fadeIn"} />;
 
 export const blurIn = () => <RandomTextSender initialText={text} windowSize={30} animation={"blurIn"} />;
 export const blurInChar = () => <RandomTextSender initialText={text} windowSize={30} animation={"blurIn"} sep="char" />;

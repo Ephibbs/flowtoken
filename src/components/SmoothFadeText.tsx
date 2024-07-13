@@ -22,12 +22,12 @@ interface SmoothTextProps {
     animationTimingFunction?: string;  // Animation timing function
 }
 
-const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0, delayMultiplier = 1.05, sep ="word", animation="fadeIn", animationDuration="1s", animationTimingFunction="ease-in-out" }) => {
+const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0, delayMultiplier = 1.05, sep ="char", animation="fadeIn", animationDuration="1s", animationTimingFunction="ease-in-out" }) => {
     const tokens = useRef<TokenInfo[]>([]);
     // const [completedTokens, setCompletedTokens] = useState<string[]>([]);
     const [animatingTokens, setAnimatingTokens] = useState<{ token: string, timestamp: number}[]>([]);
     const receivedTextLength = useRef<number>(0);
-    const timerHandle = useRef<NodeJS.Timeout>(null);
+    const timerHandle = useRef<NodeJS.Timeout | null>(null);
     const lastTokenTime = useRef<number>(performance.now());
     const lastDisplayTime = useRef<number>(performance.now());
     const tokenIndex = useRef<number>(0);
@@ -39,16 +39,12 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0,
             timerHandle.current = null;
             return;
         }
-        // console.log('tokenIndex:', tokenIndex.current);
-        // console.log('tokens:', tokens.current);
-        // console.log('Token:', tokenInfo);
-        // console.log('Latency:', performance.now() - lastDisplayTime.current, 'ms');
+        tokenIndex.current += 1;
         setAnimatingTokens(prev => [...prev, tokenInfo]);
         lastDisplayTime.current = performance.now();
-        tokenIndex.current += 1;
 
         const delay = averageInterval.current * delayMultiplier;
-        console.log('Delay:', delay, 'ms');
+        // console.log('Delay:', delay, 'ms');
         timerHandle.current = setTimeout(addToken, delay);
 
     }
@@ -76,10 +72,11 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0,
 
             lastTokenTime.current = currentTime;
             receivedTextLength.current = content.length;
-            if (windowSize > 0) {
+            if (windowSize > 1) {
                 const relevantTokens = tokens.current.slice(-windowSize);
                 const intervals = relevantTokens.slice(1).map((t, i) => t.timestamp - relevantTokens[i].timestamp);
                 averageInterval.current = intervals.length > 0 ? intervals.reduce((acc, val) => acc + val, 0) / intervals.length : 0; // default 1 second
+                // console.log('Average interval:', averageInterval.current);
             } else {
                 averageInterval.current = 0;  // default 1 second
             }
@@ -94,10 +91,10 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0,
         <>
             {
         animatingTokens.map(({ token, timestamp }, index) => {
-            if (token === '\n') return <br key={`${timestamp}-${index}`} />; // key={`${timestamp}-${index}`}
+            if (token === '\n') return <br key={`${index}`} />; // key={`${timestamp}-${index}`}
 
             return <span
-                key={`${timestamp}-${index}`}
+                key={`${index}`}
                 style={{
                     animationName: animation,
                     animationDuration: animationDuration,

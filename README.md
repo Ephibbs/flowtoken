@@ -1,6 +1,8 @@
 
 # FlowToken - Smooth Animation Library for LLM Text Streaming
 
+![flow token demo](https://nextjs-omega-five-46.vercel.app/demo.gif)
+
 FlowToken is a React component library designed to enhance the visual presentation of text streaming from large language models (LLMs). This library offers a variety of animations that make the text appear smoothly and dynamically, providing an engaging user experience.
 
 ## Demo

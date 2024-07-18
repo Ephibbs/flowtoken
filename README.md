@@ -33,18 +33,18 @@ yarn add flowtoken
 
 ## Usage
 
-Here is a simple example of how to use the `StreamText` component from FlowToken:
+## Markdown Support
+
+To use markdown, import the `AnimatedMarkdown` component.
 
 ```jsx
 import React from 'react';
-import { StreamText } from 'flowtoken';
+import { AnimatedMarkdown } from 'flowtoken';
 
 const App = () => {
   return (
-    <StreamText
-      incomingText="Hello, world!"
-      windowSize={5}
-      delayMultiplier={1.1}
+    <AnimatedMarkdown
+      incomingText="## Hello, world!"
       sep="word"
       animation="fadeIn"
       animationDuration="0.5s"
@@ -71,8 +71,7 @@ export default function Chat() {
     <div>
       {messages.map(m => (
         <div key={m.id}>
-          {m.role}: <StreamText content={m.content} windowSize={5}
-            delayMultiplier={1.1}
+          {m.role}: <AnimatedMarkdown content={m.content}
             sep="word"
             animation={index === messages.length - 1 && m.role === "assistant" ? "fadeIn" : null}
             animationDuration="0.5s"
@@ -93,39 +92,6 @@ export default function Chat() {
     </div>
   )
 }
-```
-
-### StreamText Props
-
-- **incomingText**: The text to be displayed.
-- **windowSize**: Number of tokens to consider for smoothing animations.
-- **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
-- **sep**: `word` or `char` (`word` recommended).
-- **animation**: Name of the CSS animation to apply.
-- **animationDuration**: Duration of the animation.
-- **animationTimingFunction**: Timing function of the animation.
-
-## Markdown Support
-
-To use markdown, import the `AnimatedMarkdown` component.
-
-```jsx
-import React from 'react';
-import { AnimatedMarkdown } from 'flowtoken';
-
-const App = () => {
-  return (
-    <AnimatedMarkdown
-      incomingText="## Hello, world!"
-      sep="word"
-      animation="fadeIn"
-      animationDuration="0.5s"
-      animationTimingFunction="ease-in-out"
-    />
-  );
-};
-
-export default App;
 ```
 
 ### AnimatedMarkdown Props
@@ -159,6 +125,41 @@ For custom animations, define your keyframes in CSS and pass the animation name 
 ### Notes
 
 To lower the memory footprint, disable animations by setting the `animation` parameter to `null` on any completed messages.
+
+## StreamText
+
+Here is a simple example of how to use the `StreamText` component from FlowToken, which does not render markdown:
+
+```jsx
+import React from 'react';
+import { StreamText } from 'flowtoken';
+
+const App = () => {
+  return (
+    <StreamText
+      incomingText="Hello, world!"
+      windowSize={5}
+      delayMultiplier={1.1}
+      sep="word"
+      animation="fadeIn"
+      animationDuration="0.5s"
+      animationTimingFunction="ease-in-out"
+    />
+  );
+};
+
+export default App;
+```
+
+### StreamText Props
+
+- **incomingText**: The text to be displayed.
+- **windowSize**: Number of tokens to consider for smoothing animations.
+- **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
+- **sep**: `word` or `char` (`word` recommended).
+- **animation**: Name of the CSS animation to apply.
+- **animationDuration**: Duration of the animation.
+- **animationTimingFunction**: Timing function of the animation.
 
 ## Contributing
 

@@ -176,7 +176,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
                     <span className="text-xs mb-4 text-gray-500 mr-2">In development</span>
                     <a href="https://github.com/Backless-AI/flowtoken" className="text-xs text-blue-500">Github</a>
                 </div>
-                <p className="text-sm mb-4">FlowToken is a text visualization library to animate and smooth streaming LLM token generation.</p>
+                <p className="text-sm mb-4">FlowToken is a text and markdown visualization library to animate streaming LLM token generation.</p>
                 <Controls controls={controls} setControls={setControls} />
                 <div className="h-10 text-red-500">
                     {slowSection && <p>Simulated Network Issue</p>}

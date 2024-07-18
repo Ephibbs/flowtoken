@@ -8,7 +8,7 @@ import './animations.css';
 import './custom-lists.css';
 
 interface SmoothTextProps {
-    incomingText: string;
+    content: string;
     sep?: string;
     animation?: string | null;
     animationDuration?: string;
@@ -89,7 +89,7 @@ const TokenizedText = ({ input, sep, animation, animationDuration, animationTimi
 };
 
 const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
-    incomingText,
+    content,
     sep = "word",
     animation = "fadeIn",
     animationDuration = "1s",

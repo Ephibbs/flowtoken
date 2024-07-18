@@ -186,7 +186,7 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
     }), [animateText]);
 
     return <ReactMarkdown components={animation ? components : null} remarkPlugins={[remarkGfm]}>
-            {incomingText}
+        {content}
         </ReactMarkdown>;
 };
 

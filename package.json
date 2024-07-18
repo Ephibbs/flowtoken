@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && cp src/components/*.css dist/components",
+    "build": "tsc && cp src/components/*.css dist/components && rm -rf dist/stories",
     "lint": "eslint \"{**/*,*}.{js,ts,jsx,tsx}\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -29,5 +29,10 @@
     "react-dom": "^18.3.1",
     "storybook": "^8.2.1",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "remark-gfm": "^4.0.0"
   }
 }

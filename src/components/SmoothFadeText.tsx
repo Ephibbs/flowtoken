@@ -6,23 +6,22 @@ interface TokenInfo {
     timestamp: number;
 }
 
-// enum Separator {
-//     Token = 'token',
-//     Word = 'word',
-//     Char = 'char',
-// }
+enum Separator {
+    Word = 'word',
+    Char = 'char',
+}
 
 interface SmoothTextProps {
     content: string;
     windowSize?: number;  // Number of tokens to consider for the moving average
     delayMultiplier?: number;  // Multiplier for the delay between tokens
-    sep?: string;  // Separator for splitting the text into tokens
+    sep?: Separator;  // Separator for splitting the text into either words or characters
     animation?: string;  // Animation name
     animationDuration?: string;  // Animation duration in css format ex. '1s'
     animationTimingFunction?: string;  // Animation timing function
 }
 
-const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0, delayMultiplier = 1.05, sep ="char", animation="fadeIn", animationDuration="1s", animationTimingFunction="ease-in-out" }) => {
+const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0, delayMultiplier = 1.05, sep ="word", animation="fadeIn", animationDuration="1s", animationTimingFunction="ease-in-out" }) => {
     const tokens = useRef<TokenInfo[]>([]);
     // const [completedTokens, setCompletedTokens] = useState<string[]>([]);
     const [animatingTokens, setAnimatingTokens] = useState<{ token: string, timestamp: number}[]>([]);

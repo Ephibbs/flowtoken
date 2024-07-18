@@ -45,7 +45,7 @@ const App = () => {
       incomingText="Hello, world!"
       windowSize={5}
       delayMultiplier={1.1}
-      sep="char"
+      sep="word"
       animation="fadeIn"
       animationDuration="0.5s"
       animationTimingFunction="ease-in-out"
@@ -73,7 +73,7 @@ export default function Chat() {
         <div key={m.id}>
           {m.role}: <StreamText content={m.content} windowSize={5}
             delayMultiplier={1.1}
-            sep="char"
+            sep="word"
             animation="fadeIn"
             animationDuration="0.5s"
             animationTimingFunction="ease-in-out"
@@ -95,12 +95,35 @@ export default function Chat() {
 }
 ```
 
-### Props
+### Markdown Support
+
+To use markdown, import the `AnimatedMarkdown` component.
+
+```jsx
+import React from 'react';
+import { AnimatedMarkdown } from 'flowtoken';
+
+const App = () => {
+  return (
+    <AnimatedMarkdown
+      incomingText="## Hello, world!"
+      sep="word"
+      animation="fadeIn"
+      animationDuration="0.5s"
+      animationTimingFunction="ease-in-out"
+    />
+  );
+};
+
+export default App;
+```
+
+### StreamText Props
 
 - **incomingText**: The text to be displayed.
 - **windowSize**: Number of tokens to consider for smoothing animations.
 - **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
-- **sep**: Separator used to split the incoming text into tokens or characters.
+- **sep**: `word` or `char` (`word` recommended).
 - **animation**: Name of the CSS animation to apply.
 - **animationDuration**: Duration of the animation.
 - **animationTimingFunction**: Timing function of the animation.

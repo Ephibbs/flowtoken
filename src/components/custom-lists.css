@@ -1,0 +1,16 @@
+:root {
+  --marker-animation: none;
+}
+
+.custom-li::marker {
+  animation: var(--marker-animation);
+}
+
+.code-block {
+  animation: var(--marker-animation);
+}
+
+.smooth-height-transition {
+    overflow: hidden;
+    transition: height 1s ease;
+}

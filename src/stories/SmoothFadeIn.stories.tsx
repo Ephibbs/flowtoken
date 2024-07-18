@@ -7,12 +7,12 @@ interface RandomTextSenderProps {
     initialText: string;
     windowSize: number;  // Propagate this to SmoothText for consistency
     animation?: string;  // Animation name
-    sep?: string;  // Token separator
+    sep?: any;  // Token separator
 }
 
 interface Controls {
     animation: string;
-    sep: string;
+    sep: any;
     windowSize: number;
     delayMultiplier: number;
     animationDuration: number;

@@ -15,7 +15,7 @@ interface SmoothTextProps {
     content: string;
     windowSize?: number;  // Number of tokens to consider for the moving average
     delayMultiplier?: number;  // Multiplier for the delay between tokens
-    sep?: Separator;  // Separator for splitting the text into either words or characters
+    sep?: string;  // Separator for splitting the text into either words or characters
     animation?: string;  // Animation name
     animationDuration?: string;  // Animation duration in css format ex. '1s'
     animationTimingFunction?: string;  // Animation timing function

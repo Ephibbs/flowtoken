@@ -3,11 +3,34 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { a11yDark as style } from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import a11yDark from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark"
 import './animations.css';
 import './custom-lists.css';
 
-const AnimatedImage = ({ src, alt, animation, animationDuration, animationTimingFunction, animationIterationCount }) => {
+interface SmoothTextProps {
+    children: string;
+    sep?: string;
+    animation?: string;
+    animationDuration?: string;
+    animationTimingFunction?: string;
+}
+
+interface AnimatedImageProps {
+    src: string;
+    alt: string;
+    animation: string;
+    animationDuration: string;
+    animationTimingFunction: string;
+    animationIterationCount: number;
+}
+
+interface CustomRendererProps {
+    rows: any[];
+    stylesheet: any;
+    useInlineStyles: boolean;
+}
+
+const AnimatedImage: React.FC<AnimatedImageProps>  = ({ src, alt, animation, animationDuration, animationTimingFunction, animationIterationCount }) => {
     const [isLoaded, setIsLoaded] = React.useState(false);
 
     const imageStyle = isLoaded ? {
@@ -35,14 +58,15 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
     animationDuration = "1s",
     animationTimingFunction = "ease-in-out"
 }) => {
-    const animationStyle = {
+    const animationStyle: any
+     = {
         '--marker-animation': `${animation} ${animationDuration} ${animationTimingFunction}`,
     };
     // Memoize animateText function to prevent recalculations if props do not change
-    const animateText = React.useCallback((text, type) => {
+    const animateText: (text: string, type: string) => React.ReactNode = React.useCallback((text: string, type: string) => {
         // console.log('Animating type:', type);
         // console.log('Text:', text);
-        const processText = (input) => {
+        const processText: (input: any) => React.ReactNode = (input: any) => {
             if (Array.isArray(input)) {
                 // Process each element in the array
                 return input.map(element => processText(element));
@@ -80,15 +104,15 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
         return processText(text);
     }, [animation, animationDuration, animationTimingFunction, sep]);
 
-    const customRenderer = ({ rows, stylesheet, useInlineStyles }) => {
+    const customRenderer: React.FC<CustomRendererProps> = ({ rows, stylesheet, useInlineStyles }) => {
         return rows.map((node, i) => (
             <div key={i} style={node.properties?.style || {}}>
-                {node.children.map((token, key) => {
+                {node.children.map((token: any, key: string) => {
                     // Extract and apply styles from the stylesheet if available and inline styles are used
                     const tokenStyles = useInlineStyles && stylesheet ? { ...stylesheet[token?.properties?.className[1]], ...token.properties?.style } : token.properties?.style || {};
                     return (
                         <span key={key} style={tokenStyles}>
-                            {token.children && token.children[0].value.split(' ').map((word, index) => (
+                            {token.children && token.children[0].value.split(' ').map((word: string, index: number) => (
                                 <span key={index} style={{
                                     animationName: animation,
                                     animationDuration,
@@ -108,40 +132,41 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
     };
 
     // Memoize components object to avoid redefining components unnecessarily
-    const components = React.useMemo(() => ({
-        text: ({ node, ...props }) => animateText(props.children, 'text'),
-        h1: ({ node, ...props }) => <h1>{animateText(props.children, 'h1')}</h1>,
-        h2: ({ node, ...props }) => <h2>{animateText(props.children, 'h2')}</h2>,
-        h3: ({ node, ...props }) => <h3>{animateText(props.children, 'h3')}</h3>,
-        h4: ({ node, ...props }) => <h4>{animateText(props.children, 'h4')}</h4>,
-        h5: ({ node, ...props }) => <h5>{animateText(props.children, 'h5')}</h5>,
-        h6: ({ node, ...props }) => <h6>{animateText(props.children, 'h6')}</h6>,
-        p: ({ node, ...props }) => <p>{animateText(props.children, 'p')}</p>,
-        li: ({ node, ...props }) => <li className="custom-li" style={animationStyle}>{animateText(props.children, 'li')}</li>,
-        a: ({ node, ...props }) => <a href={props.href} target="_blank" rel="noopener noreferrer">{animateText(props.children, 'a')}</a>,
-        strong: ({ node, ...props }) => <strong>{animateText(props.children, 'strong')}</strong>,
-        i: ({ node, ...props }) => <i>{animateText(props.children, 'italic')}</i>,
-        u: ({ node, ...props }) => <u>{animateText(props.children, 'u')}</u>,
-        em: ({ node, ...props }) => <em>{animateText(props.children, 'em')}</em>,
-        code: ({ node, inline, className, children, ...props }) => {
+    const components: any
+     = React.useMemo(() => ({
+        text: ({ node, ...props }: any) => animateText(props.children, 'text'),
+        h1: ({ node, ...props }: any) => <h1>{animateText(props.children, 'h1')}</h1>,
+        h2: ({ node, ...props }: any) => <h2>{animateText(props.children, 'h2')}</h2>,
+        h3: ({ node, ...props }: any) => <h3>{animateText(props.children, 'h3')}</h3>,
+        h4: ({ node, ...props }: any) => <h4>{animateText(props.children, 'h4')}</h4>,
+        h5: ({ node, ...props }: any) => <h5>{animateText(props.children, 'h5')}</h5>,
+        h6: ({ node, ...props }: any) => <h6>{animateText(props.children, 'h6')}</h6>,
+        p: ({ node, ...props }: any) => <p>{animateText(props.children, 'p')}</p>,
+        li: ({ node, ...props }: any) => <li className="custom-li" style={animationStyle}>{animateText(props.children, 'li')}</li>,
+        a: ({ node, ...props }: any) => <a href={props.href} target="_blank" rel="noopener noreferrer">{animateText(props.children, 'a')}</a>,
+        strong: ({ node, ...props }: any) => <strong>{animateText(props.children, 'strong')}</strong>,
+        i: ({ node, ...props }: any) => <i>{animateText(props.children, 'italic')}</i>,
+        u: ({ node, ...props }: any) => <u>{animateText(props.children, 'u')}</u>,
+        em: ({ node, ...props }: any) => <em>{animateText(props.children, 'em')}</em>,
+        code: ({ node, inline, className, children, ...props }: any) => {
             console.log('className:', className?.substring(9).trim() || '');
             return <div style={animationStyle} className="code-block" >
-                <SyntaxHighlighter style={style} language={className?.substring(9).trim() || ''} renderer={customRenderer}>
+                <SyntaxHighlighter style={a11yDark} language={className?.substring(9).trim() || ''} renderer={customRenderer}>
                     {children}
                 </SyntaxHighlighter>
             </div>
         },
-        hr: ({ node, ...props }) => <hr style={{
+        hr: ({ node, ...props }: any) => <hr style={{
             animationName: animation,
             animationDuration,
             animationTimingFunction,
             animationIterationCount: 1,
             whiteSpace: 'pre-wrap',
         }} />,
-        img: ({ node, ...props }) => <AnimatedImage src={props.src} alt={props.alt} animation={animation} animationDuration={animationDuration} animationTimingFunction={animationTimingFunction} animationIterationCount={1} />,
-        table: ({ node, ...props }) => <table className="code-block">{props.children}</table>,
-        tr: ({ node, ...props }) => <tr>{animateText(props.children, 'row')}</tr>,
-        td: ({ node, ...props }) => <td>{animateText(props.children, 'cell')}</td>,
+        img: ({ node, ...props }: any) => <AnimatedImage src={props.src} alt={props.alt} animation={animation} animationDuration={animationDuration} animationTimingFunction={animationTimingFunction} animationIterationCount={1} />,
+        table: ({ node, ...props }: any) => <table className="code-block">{props.children}</table>,
+        tr: ({ node, ...props }: any) => <tr>{animateText(props.children, 'row')}</tr>,
+        td: ({ node, ...props }: any) => <td>{animateText(props.children, 'cell')}</td>,
         // More tags can be added here
     }), [animateText]);
 

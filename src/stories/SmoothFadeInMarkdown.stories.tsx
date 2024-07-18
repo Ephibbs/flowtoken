@@ -54,7 +54,7 @@ const Controls = ({ controls, setControls }: { controls: Controls, setControls: 
             <label style={{ marginRight: '1rem' }}>
                 Animation:
                 <select value={animation} onChange={handleAnimationChange}>
-                    <option value="default">Default</option>
+                    <option value="none">None</option>
                     <option value="fadeIn">Fade In</option>
                     <option value="blurIn">Blur In</option>
                     <option value="slideInFromLeft">Slide In From Left</option>
@@ -114,12 +114,12 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         delayMultiplier: 1.4,
         animationDuration: 0.6,
         animationTimingFunction: "ease-in-out",
-        generationSpeed: 20,
+        generationSpeed: 3,
         simulateNetworkIssue: false
     });
     const [slowSection, setSlowSection] = useState<boolean>(false);
     const [numId, setNumId] = useState<number>(0);
-
+    console.log('Controls:', controls);
     useEffect(() => {
         let extra = 0;
         if (tokenCount > 0 && tokenCount % 5 === 0 && controls.simulateNetworkIssue) {
@@ -182,9 +182,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
             </div>
             <div className="text-sm w-1/2" style={{ height: '3000px'}}>
                 {currentText.length > 0 &&
-                    <AnimatedMarkdown animation={controls.animation} sep={controls.sep} animationDuration={animationDurationString} animationTimingFunction={controls.animationTimingFunction}>
-                        {currentText}
-                    </AnimatedMarkdown>
+                    <AnimatedMarkdown incomingText={currentText} animation={controls.animation === 'none' ? null : controls.animation} sep={controls.sep} animationDuration={animationDurationString} animationTimingFunction={controls.animationTimingFunction} />   
                 }
             </div>
         </div>
@@ -214,10 +212,10 @@ You can also create hyperlinks: [OpenAI](https://www.openai.com)
 
 #### Unordered List
 
-- Item 1
+- Item 1 and some *more*
 - Item 2
-- Subitem 2.1
-- Subitem 2.2
+    - Subitem 2.1
+    - Subitem 2.2
 - Item 3
 
 #### Ordered List
@@ -236,52 +234,6 @@ You can also create hyperlinks: [OpenAI](https://www.openai.com)
 # Python code block
 def hello_world():
     print("Hello, world!")
-\`\`\`
-
-\`\`\`javascript
-import React from 'react';
-
-const animateText = React.useCallback((text) => {
-    const processText = (input) => {
-        if (Array.isArray(input)) {
-            // Process each element in the array
-            return input.map(element => processText(element));
-        } else if (typeof input === 'string') {
-            // Process strings based on the specified separator
-            let tokens = [];
-            if (sep === 'word') {
-                tokens = input.split(/(\s+)/).filter(token => token.length > 0);
-            } else if (sep === 'char') {
-                tokens = input.split('');
-            } else {
-                throw new Error('Invalid separator');
-            }
-            return tokens.map((token, index) => (
-                <span key={index} style={{
-                    animationName: animation,
-                    animationDuration,
-                    animationTimingFunction,
-                    animationIterationCount: 1,
-                    whiteSpace: 'pre-wrap',
-                    display: 'inline-block',
-                }}>
-                    {token}
-                </span>
-            ));
-        } else if (React.isValidElement(input)) {
-            // If the element is a React component or element, clone it and process its children
-            return React.cloneElement(input, {
-                ...input.props,
-                children: processText(input.props.children)
-            });
-        } else {
-            // Return non-string, non-element inputs unchanged (null, undefined, etc.)
-            return input;
-        }
-    };
-
-    return processText(text);
-}, [animation, animationDuration, animationTimingFunction, sep]);
 \`\`\`
 
 ### Blockquotes
@@ -308,10 +260,6 @@ A table:
 ### Horizontal Rule
 
 ---
-
-### Highlighted Text
-
-\`Highlighted\` text with backticks.
 
 ### Task List
 

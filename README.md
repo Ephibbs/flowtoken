@@ -74,7 +74,7 @@ export default function Chat() {
           {m.role}: <StreamText content={m.content} windowSize={5}
             delayMultiplier={1.1}
             sep="word"
-            animation="fadeIn"
+            animation={index === messages.length - 1 && m.role === "assistant" ? "fadeIn" : null}
             animationDuration="0.5s"
             animationTimingFunction="ease-in-out"
             />
@@ -95,7 +95,17 @@ export default function Chat() {
 }
 ```
 
-### Markdown Support
+### StreamText Props
+
+- **incomingText**: The text to be displayed.
+- **windowSize**: Number of tokens to consider for smoothing animations.
+- **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
+- **sep**: `word` or `char` (`word` recommended).
+- **animation**: Name of the CSS animation to apply.
+- **animationDuration**: Duration of the animation.
+- **animationTimingFunction**: Timing function of the animation.
+
+## Markdown Support
 
 To use markdown, import the `AnimatedMarkdown` component.
 
@@ -118,15 +128,14 @@ const App = () => {
 export default App;
 ```
 
-### StreamText Props
+### AnimatedMarkdown Props
 
 - **incomingText**: The text to be displayed.
-- **windowSize**: Number of tokens to consider for smoothing animations.
-- **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
 - **sep**: `word` or `char` (`word` recommended).
-- **animation**: Name of the CSS animation to apply.
-- **animationDuration**: Duration of the animation.
-- **animationTimingFunction**: Timing function of the animation.
+- **animation**: Name of the CSS animation to apply. See below for options.
+- **animationDuration**: CSS Duration of the animation. Ex. `0.6s`
+- **animationTimingFunction**: CSS Timing function of the animation. Ex. `ease`, `ease-in-out`, etc
+- **codeStyle**: The highlighter js style object to use.
 
 ## Animations
 
@@ -147,10 +156,14 @@ FlowToken supports various CSS animations:
 
 For custom animations, define your keyframes in CSS and pass the animation name to the `animation` prop.
 
+### Notes
+
+To lower the memory footprint, disable animations by setting the `animation` parameter to `null` on any completed messages.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit pull requests or open issues to suggest features or report bugs.
 
 ## License
 
-FlowToken is MIT licensed. Please see the LICENSE file for more details.
+FlowToken is MIT licensed.

@@ -126,6 +126,10 @@ For custom animations, define your keyframes in CSS and pass the animation name 
 
 To lower the memory footprint, disable animations by setting the `animation` parameter to `null` on any completed messages.
 
+If using tailwind with generated markdown, be sure to setup tailwind typography: [https://github.com/tailwindlabs/tailwindcss-typography](here)
+
+and add `prose lg:prose-md prose-pre:p-0 prose-pre:m-0 prose-pre:bg-transparent` to your flowtoken markdown container.
+
 ## StreamText
 
 Here is a simple example of how to use the `StreamText` component from FlowToken, which does not render markdown:

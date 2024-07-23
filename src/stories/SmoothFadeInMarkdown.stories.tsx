@@ -114,12 +114,12 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText }) => {
         delayMultiplier: 1.4,
         animationDuration: 0.6,
         animationTimingFunction: "ease-in-out",
-        generationSpeed: 3,
+        generationSpeed: 30,
         simulateNetworkIssue: false
     });
     const [slowSection, setSlowSection] = useState<boolean>(false);
     const [numId, setNumId] = useState<number>(0);
-    console.log('Controls:', controls);
+    // console.log('Controls:', controls);
     useEffect(() => {
         let extra = 0;
         if (tokenCount > 0 && tokenCount % 5 === 0 && controls.simulateNetworkIssue) {

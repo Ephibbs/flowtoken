@@ -118,7 +118,9 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
                 return input;
             }
         };
-
+        if (!animation) {
+            return text;
+        }
         return processText(text);
     }, [animation, animationDuration, animationTimingFunction, sep]);
 
@@ -137,7 +139,7 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
                                     animationTimingFunction,
                                     animationIterationCount: 1,
                                     whiteSpace: 'pre-wrap',
-                                    display: 'inline-block', // Ensuring that animation is visible
+                                    display: 'inline-block',
                                 }}>
                                     {word + (index < token.children[0].value.split(' ').length - 1 ? ' ' : '')}
                                 </span>
@@ -164,13 +166,19 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
          a: ({ node, ...props }: any) => <a {...props} href={props.href} target="_blank" rel="noopener noreferrer">{animateText(props.children)}</a>,
          strong: ({ node, ...props }: any) => <strong {...props}>{animateText(props.children)}</strong>,
          em: ({ node, ...props }: any) => <em {...props}>{animateText(props.children)}</em>,
-        code: ({ node, inline, className, children, ...props }: any) => {
-            return <div {...props} style={animationStyle} className="code-block" >
+        code: ({ node, className, children, ...props }: any) => {
+            if (!className || !className.startsWith("language-")) {
+                return <code {...props}>
+                    {animateText(children)}
+                </code>;
+            }
+            return <div {...props} style={animationStyle} className={`code-block`}>
                 <SyntaxHighlighter style={codeStyle} language={className?.substring(9).trim() || ''} renderer={customRenderer}>
                     {children}
                 </SyntaxHighlighter>
             </div>
         },
+
          hr: ({ node, ...props }: any) => <hr {...props} style={{
             animationName: animation,
             animationDuration,
@@ -182,10 +190,9 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
         table: ({ node, ...props }: any) => <table {...props} className="code-block">{props.children}</table>,
         tr: ({ node, ...props }: any) => <tr {...props}>{animateText(props.children)}</tr>,
         td: ({ node, ...props }: any) => <td {...props}>{animateText(props.children)}</td>,
-        // More tags can be added here
     }), [animateText]);
 
-    return <ReactMarkdown components={animation ? components : null} remarkPlugins={[remarkGfm]}>
+    return <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
         {content}
         </ReactMarkdown>;
 };

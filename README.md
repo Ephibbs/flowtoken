@@ -44,7 +44,7 @@ import { AnimatedMarkdown } from 'flowtoken';
 const App = () => {
   return (
     <AnimatedMarkdown
-      incomingText="## Hello, world!"
+      content="## Hello, world!"
       sep="word"
       animation="fadeIn"
       animationDuration="0.5s"
@@ -141,7 +141,7 @@ import { StreamText } from 'flowtoken';
 const App = () => {
   return (
     <StreamText
-      incomingText="Hello, world!"
+      content="Hello, world!"
       windowSize={5}
       delayMultiplier={1.1}
       sep="word"
@@ -159,10 +159,10 @@ This includes the option to smooth the rate of text display in effect reducing f
 
 ### StreamText Props
 
-- **incomingText**: The text to be displayed.
+- **content**: The text to be displayed.
 - **windowSize**: Number of tokens to consider for smoothing animations.
 - **delayMultiplier**: Multiplier to adjust the delay for each token or character's appearance.
-- **sep**: `word` or `char` (`word` recommended).
+- **sep**: `word` or `char`
 - **animation**: Name of the CSS animation to apply.
 - **animationDuration**: Duration of the animation.
 - **animationTimingFunction**: Timing function of the animation.

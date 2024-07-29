@@ -62,7 +62,7 @@ export default App;
 'use client'
 
 import { useChat } from 'ai/react'
-import { StreamText } from 'flowtoken';
+import { AnimatedMarkdown } from 'flowtoken';
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat()
@@ -73,7 +73,7 @@ export default function Chat() {
         <div key={m.id}>
           {m.role}: <AnimatedMarkdown content={m.content}
             sep="word"
-            animation={index === messages.length - 1 && m.role === "assistant" ? "fadeIn" : null}
+            animation={"fadeIn"}
             animationDuration="0.5s"
             animationTimingFunction="ease-in-out"
             />
@@ -96,9 +96,9 @@ export default function Chat() {
 
 ### AnimatedMarkdown Props
 
-- **incomingText**: The text to be displayed.
-- **sep**: `word` or `char` (`word` recommended).
-- **animation**: Name of the CSS animation to apply. See below for options.
+- **content**: The text to be displayed.
+- **sep**: `word` or `char`.
+- **animation**: Name of the CSS animation to apply. See below for options or define your own in css.
 - **animationDuration**: CSS Duration of the animation. Ex. `0.6s`
 - **animationTimingFunction**: CSS Timing function of the animation. Ex. `ease`, `ease-in-out`, etc
 - **codeStyle**: The highlighter js style object to use.
@@ -154,6 +154,8 @@ const App = () => {
 
 export default App;
 ```
+
+This includes the option to smooth the rate of text display in effect reducing fluctuations in token generation speed by applying a simple moving average.
 
 ### StreamText Props
 

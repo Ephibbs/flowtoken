@@ -1,6 +1,6 @@
 
 # FlowToken 
-## A smooth Animation Library for LLM Text Streaming
+### A smooth Animation Library for LLM Text Streaming
 
 ![flow token demo](https://nextjs-omega-five-46.vercel.app/demo.gif)
 

@@ -4,14 +4,35 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import style from 'react-syntax-highlighter/dist/esm/styles/hljs/docco'
-import './animations.css';
-import './custom-lists.css';
+import animations from './animations.module.css';
+import customListsStyles from './custom-lists.module.css';
 import { splitRegexPattern } from '../utils/regex-splitter';
+
+// Fallback animations object in case CSS modules don't load properly in some environments
+const fallbackAnimations = {
+  fadeInName: 'fadeIn',
+  blurInName: 'blurIn',
+  typewriterName: 'typewriter',
+  slideInFromLeftName: 'slideInFromLeft',
+  fadeAndScaleName: 'fadeAndScale',
+  colorTransitionName: 'colorTransition',
+  rotateInName: 'rotateIn',
+  bounceInName: 'bounceIn',
+  elasticName: 'elastic',
+  highlightName: 'highlight',
+  blurAndSharpenName: 'blurAndSharpen',
+  dropInName: 'dropIn',
+  slideUpName: 'slideUp',
+  waveName: 'wave'
+};
+
+// Define a type for the animation names
+type AnimationName = string;
 
 interface SmoothTextProps {
     content: string;
     sep?: string;
-    animation?: string | null;
+    animation?: AnimationName | null;
     animationDuration?: string;
     animationTimingFunction?: string;
     codeStyle?: any;
@@ -75,11 +96,39 @@ const TokenizedText = ({ input, sep, animation, animationDuration, animationTimi
         return input.split(splitRegex).filter(token => token.length > 0);
     }, [input, sep]);
 
+    // Get the actual animation name from the CSS module if it's a predefined animation
+    const resolvedAnimation = React.useMemo(() => {
+        if (!animation) return null;
+        if (typeof animation !== 'string') return null;
+        
+        // Check if the animation exists in our CSS module or fallback to direct names
+        try {
+            const animationKey = `${animation}Name` as keyof typeof animations;
+            // Try to access the CSS module first
+            if (animations && typeof animations === 'object' && animations[animationKey]) {
+                return animations[animationKey];
+            }
+            // If the CSS module doesn't have the animation, check fallback
+            if (fallbackAnimations && typeof fallbackAnimations === 'object') {
+                const fallbackKey = `${animation}Name` as keyof typeof fallbackAnimations;
+                if (fallbackAnimations[fallbackKey]) {
+                    return fallbackAnimations[fallbackKey];
+                }
+            }
+            // Last resort: return the animation name directly
+            return animation;
+        } catch (e) {
+            // If CSS module access fails, use fallback names
+            const fallbackKey = `${animation}Name` as keyof typeof fallbackAnimations;
+            return fallbackAnimations[fallbackKey] || animation;
+        }
+    }, [animation]);
+
     return (
         <>
             {tokens?.map((token, index) => (
                 <span key={index} style={{
-                    animationName: animation,
+                    animationName: resolvedAnimation || undefined,
                     animationDuration,
                     animationTimingFunction,
                     animationIterationCount,
@@ -313,7 +362,7 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
          h5: ({ node, ...props }: any) => <h5 {...props}>{animateText(props.children)}</h5>,
          h6: ({ node, ...props }: any) => <h6 {...props}>{animateText(props.children)}</h6>,
          p: ({ node, ...props }: any) => <p {...props}>{animateText(props.children)}</p>,
-         li: ({ node, ...props }: any) => <li {...props} className="custom-li" style={animationStyle}>{animateText(props.children)}</li>,
+         li: ({ node, ...props }: any) => <li {...props} className={customListsStyles.customLi} style={animationStyle}>{animateText(props.children)}</li>,
          a: ({ node, ...props }: any) => <a {...props} href={props.href} target="_blank" rel="noopener noreferrer">{animateText(props.children)}</a>,
          strong: ({ node, ...props }: any) => <strong {...props}>{animateText(props.children)}</strong>,
          em: ({ node, ...props }: any) => <em {...props}>{animateText(props.children)}</em>,
@@ -374,15 +423,17 @@ const MarkdownAnimateText: React.FC<SmoothTextProps> = ({
             whiteSpace: 'pre-wrap',
         }} />,
         img: ({ node, ...props }: any) => <AnimatedImage src={props.src} alt={props.alt} animation={animation || ''} animationDuration={animationDuration} animationTimingFunction={animationTimingFunction} animationIterationCount={1} />,
-        table: ({ node, ...props }: any) => <table {...props} className="code-block">{props.children}</table>,
+        table: ({ node, ...props }: any) => <table {...props} className={customListsStyles.codeBlock}>{props.children}</table>,
         tr: ({ node, ...props }: any) => <tr {...props}>{animateText(props.children)}</tr>,
         td: ({ node, ...props }: any) => <td {...props}>{animateText(props.children)}</td>,
         ...htmlComponents
     }), [animateText]);
 
-    return <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
-        {content}
-        </ReactMarkdown>;
+    return <div className={customListsStyles.variables}>
+        <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+            {content}
+        </ReactMarkdown>
+    </div>;
 };
 
 export default MarkdownAnimateText;

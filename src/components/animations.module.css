@@ -144,3 +144,20 @@
     transform: translateY(0);
   }
 }
+
+:export {
+  fadeInName: fadeIn;
+  blurInName: blurIn;
+  typewriterName: typewriter;
+  slideInFromLeftName: slideInFromLeft;
+  fadeAndScaleName: fadeAndScale;
+  colorTransitionName: colorTransition;
+  rotateInName: rotateIn;
+  bounceInName: bounceIn;
+  elasticName: elastic;
+  highlightName: highlight;
+  blurAndSharpenName: blurAndSharpen;
+  dropInName: dropIn;
+  slideUpName: slideUp;
+  waveName: wave;
+} 

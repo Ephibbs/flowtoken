@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './animations.css';
+import animations from './animations.module.css';
 
 interface TokenInfo {
     token: string;
@@ -31,6 +31,16 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0,
     const lastDisplayTime = useRef<number>(performance.now());
     const tokenIndex = useRef<number>(0);
     const averageInterval = useRef<number>(0);
+
+    // Get the actual animation name from the CSS module
+    const resolvedAnimation = React.useMemo(() => {
+        if (!animation) return null;
+        if (typeof animation !== 'string') return null;
+        
+        // Check if the animation exists in our CSS module
+        const animationKey = `${animation}Name` as keyof typeof animations;
+        return animations[animationKey] || animation;
+    }, [animation]);
 
     const addToken = () => {
         const tokenInfo = tokens.current[tokenIndex.current];
@@ -95,7 +105,7 @@ const SmoothAnimateText: React.FC<SmoothTextProps> = ({ content, windowSize = 0,
             return <span
                 key={`${index}`}
                 style={{
-                    animationName: animation,
+                    animationName: resolvedAnimation || undefined,
                     animationDuration: animationDuration,
                     animationTimingFunction: animationTimingFunction,
                     animationIterationCount: 1,

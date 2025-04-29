@@ -1,0 +1,31 @@
+# Development files
+src/
+stories/
+.storybook/
+
+# Config files
+.github/
+.gitignore
+.eslintrc
+.eslintignore
+.prettierrc
+.prettierrc.js
+.babelrc
+tsconfig.json
+jest.config.js
+rollup.config.js
+webpack.config.js
+
+# Tests
+__tests__/
+test/
+tests/
+*.test.*
+*.spec.*
+
+# Other
+node_modules/
+npm-debug.log
+yarn-error.log
+coverage/
+.DS_Store 

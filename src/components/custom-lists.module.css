@@ -1,16 +1,16 @@
-:root {
+.variables {
   --marker-animation: none;
 }
 
-.custom-li::marker {
+.customLi::marker {
   animation: var(--marker-animation);
 }
 
-.code-block {
+.codeBlock {
   animation: var(--marker-animation);
 }
 
-.smooth-height-transition {
+.smoothHeightTransition {
     overflow: hidden;
     transition: height 1s ease;
-}
+} 

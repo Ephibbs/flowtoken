@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './animations.css';
+import animations from './animations.module.css';
 
 interface StreamingFadeInTextProps {
     incomingText: string;  // Each new token received for display
@@ -7,7 +7,7 @@ interface StreamingFadeInTextProps {
     sep?: string;  // Token separator
 }
 
-const StreamingFadeInText: React.FC<StreamingFadeInTextProps> = ({ incomingText, animation="", sep="token" }) => {
+const StreamingFadeInText: React.FC<StreamingFadeInTextProps> = ({ incomingText, animation="fadeIn", sep="token" }) => {
     // console.log('sep:', sep);
     const [animatingTokens, setAnimatingTokens] = useState<{token: string, id: number}[]>([]);
     const [completedTokens, setCompletedTokens] = useState<string[]>([]);
@@ -16,6 +16,16 @@ const StreamingFadeInText: React.FC<StreamingFadeInTextProps> = ({ incomingText,
     const receivedText = useRef<string>('');
     const animationDuration = '0.5s';
     const animationTimingFunction = 'ease-in-out';
+
+    // Get the actual animation name from the CSS module
+    const resolvedAnimation = React.useMemo(() => {
+        if (!animation) return null;
+        if (typeof animation !== 'string') return null;
+        
+        // Check if the animation exists in our CSS module
+        const animationKey = `${animation}Name` as keyof typeof animations;
+        return animations[animationKey] || animation;
+    }, [animation]);
 
     useEffect(() => {
         if (incomingText) {
@@ -65,7 +75,7 @@ const StreamingFadeInText: React.FC<StreamingFadeInTextProps> = ({ incomingText,
                 return <span
                     key={id}
                     style={{
-                        animationName: animation,
+                        animationName: resolvedAnimation || undefined,
                         animationDuration: animationDuration,
                         animationTimingFunction: animationTimingFunction,
                         animationIterationCount: 1,

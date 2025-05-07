@@ -6,8 +6,19 @@ interface CustomRendererProps {
     useInlineStyles: boolean;
 }
 
-// Not a react component, but returns a function that returns a react component to be used as a custom code renderer in the SyntaxHighlighter component
+// Not a react component, but returns a function that returns a react component 
+// to be used as a custom code renderer in the SyntaxHighlighter component
 const customCodeRenderer = ({ animation, animationDuration, animationTimingFunction }: any) => {
+    // Memoize the animation style to avoid recreating it for each text segment
+    const animationStyle = {
+        animationName: animation || '',
+        animationDuration,
+        animationTimingFunction,
+        animationIterationCount: 1,
+        whiteSpace: 'pre-wrap',
+        display: 'inline-block',
+    };
+
     return ({rows, stylesheet, useInlineStyles}: CustomRendererProps) => rows.map((node, i) => (
         <div key={i} style={node.properties?.style || {}}>
             {node.children.map((token: any, key: string) => {
@@ -34,4 +45,4 @@ const customCodeRenderer = ({ animation, animationDuration, animationTimingFunct
     ));
 };
 
-export default customCodeRenderer;
+export default customCodeRenderer; // Cannot use React.memo here as this is a function that returns a function

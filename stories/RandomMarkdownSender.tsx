@@ -92,7 +92,7 @@ const RandomTextSender: React.FC<RandomTextSenderProps> = ({ initialText, custom
             </div>
             <div className="text-sm w-1/2 prose lg:prose-md prose-pre:p-0 prose-pre:m-0 prose-pre:bg-transparent" style={{ height: '3000px'}}>
                 {currentText.length > 0 &&
-                    <AnimatedMarkdown content={currentText} animation={controls.animation === 'none' ? undefined : controls.animation} sep={controls.sep} animationDuration={animationDurationString} animationTimingFunction={controls.animationTimingFunction} customComponents={customComponents} htmlComponents={htmlComponents}/>   
+                    <AnimatedMarkdown content={currentText} animation={controls.animation === 'none' ? undefined : controls.animation} sep={controls.sep} animationDuration={animationDurationString} animationTimingFunction={controls.animationTimingFunction} customComponents={customComponents}/>   
                 }
             </div>
         </div>

@@ -12,7 +12,7 @@ import DefaultCode from './DefaultCode';
 interface MarkdownAnimateTextProps {
     content: string;
     sep?: string;
-    animation?: string;
+    animation?: string | null;
     animationDuration?: string;
     animationTimingFunction?: string;
     codeStyle?: any;
@@ -23,8 +23,8 @@ interface MarkdownAnimateTextProps {
 const DEFAULT_CUSTOM_COMPONENTS: Record<string, any> = {};
 
 // Function to create animation style object - extracted outside of component
-const createAnimationStyle = (animation: string, animationDuration: string, animationTimingFunction: string) => ({
-    animation: `${animation} ${animationDuration} ${animationTimingFunction}`,
+const createAnimationStyle = (animation: string | null, animationDuration: string, animationTimingFunction: string) => ({
+    animation: animation ? `${animation} ${animationDuration} ${animationTimingFunction}` : 'none',
 });
 
 // Memoized component for text elements to avoid creating many instances

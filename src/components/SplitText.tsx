@@ -1,170 +1,135 @@
-import React, { useRef, useEffect, ReactElement, isValidElement } from 'react';
+import React, { useRef, useEffect, ReactElement } from 'react';
 
-// IMPORTANT: Simple implementation that focuses ONLY on table elements
+interface TokenWithSource {
+  text: string;
+  source: number;
+}
+
+type TokenType = string | TokenWithSource | ReactElement;
+
 const TokenizedText = ({ input, sep, animation, animationDuration, animationTimingFunction, animationIterationCount }: any) => {
     // Early return for no animation case
     if (animation === 'none' || !animation) {
         return <>{input}</>;
     }
-    
-    // DEBUG: Log what we're receiving to help understand the issue
-    console.log('TokenizedText input:', input);
-    
-    // Direct check for string tag name (most reliable way to check)
-    const isTableElement = (el: any): boolean => {
-        try {
-            if (!isValidElement(el)) return false;
-            
-            // For standard HTML elements
-            if (typeof el.type === 'string') {
-                console.log('Element type:', el.type);
-                return el.type === 'th' || el.type === 'td' || el.type === 'br';
-            }
 
-            // DEBUG: Log complex element types
-            if (typeof el.type === 'function' || typeof el.type === 'object') {
-                console.log('Complex element type:', 
-                  typeof el.type === 'function' ? el.type.name || 'unnamed function' : 
-                  (el.type as any)?.displayName || 'unknown object'
-                );
+    // Track previous input to detect changes
+    const prevInputRef = useRef<string>('');
+    // Track tokens with their source for proper keying in diff mode
+    const tokensWithSources = useRef<TokenWithSource[]>([]);
+    
+    // For detecting and handling duplicated content
+    const fullTextRef = useRef<string>('');
+
+    const tokens = React.useMemo(() => {
+        if (React.isValidElement(input)) return [input];
+
+        if (typeof input !== 'string') return null;
+
+        // For diff mode, we need to handle things differently
+        if (sep === 'diff') {
+            // If this is the first render or we've gone backward, reset everything
+            if (!prevInputRef.current || input.length < prevInputRef.current.length) {
+                tokensWithSources.current = [];
+                fullTextRef.current = '';
             }
             
-            return false;
-        } catch (e) {
-            console.error('Error checking element type:', e);
-            return false;
+            // Only process input if it's different from previous
+            if (input !== prevInputRef.current) {
+                // Find the true unique content by comparing with our tracked full text
+                // This handles cases where the input contains duplicates
+                
+                // First check if we're just seeing the same content repeated
+                if (input.includes(fullTextRef.current)) {
+                    const uniqueNewContent = input.slice(fullTextRef.current.length);
+                    
+                    // Only add if there's actual new content
+                    if (uniqueNewContent.length > 0) {
+                        tokensWithSources.current.push({
+                            text: uniqueNewContent,
+                            source: tokensWithSources.current.length
+                        });
+                        
+                        // Update our full text tracking
+                        fullTextRef.current = input;
+                    }
+                } else {
+                    // Handle case when input completely changes
+                    // Just take the whole thing as a new token
+                    tokensWithSources.current = [{
+                        text: input,
+                        source: 0
+                    }];
+                    fullTextRef.current = input;
+                }
+            }
+            
+            // Return the tokensWithSources directly
+            return tokensWithSources.current;
         }
+
+        // Original word/char splitting logic
+        let splitRegex;
+        if (sep === 'word') {
+            splitRegex = /(\s+)/;
+        } else if (sep === 'char') {
+            splitRegex = /(.)/;
+        } else {
+            throw new Error('Invalid separator: must be "word", "char", or "diff"');
+        }
+
+        return input.split(splitRegex).filter(token => token.length > 0);
+    }, [input, sep]);
+
+    // Update previous input after processing
+    useEffect(() => {
+        if (typeof input === 'string') {
+            prevInputRef.current = input;
+        }
+    }, [input]);
+
+    // Helper function to check if token is a TokenWithSource type
+    const isTokenWithSource = (token: TokenType): token is TokenWithSource => {
+        return token !== null && typeof token === 'object' && 'text' in token && 'source' in token;
     };
     
-    // IMMEDIATE PASS-THROUGH: If it's a table element, don't process it at all
-    if (isValidElement(input) && isTableElement(input)) {
-        console.log('DIRECT PASS-THROUGH of table element');
-        return input;
-    }
-    
-    // Special case for arrays with table elements
-    if (Array.isArray(input)) {
-        const processedArray = input.map((item, index) => {
-            if (isValidElement(item) && isTableElement(item)) {
-                console.log('Preserving table element in array');
-                return item; // Return table elements as-is
-            }
-            if (typeof item === 'string') {
-                // Only animate text content
-                return processTextContent(item, index.toString(), sep, animation, animationDuration, animationTimingFunction, animationIterationCount);
-            }
-            // For other elements, just add a key
-            return isValidElement(item) ? React.cloneElement(item, { key: index }) : item;
-        });
-        
-        return <>{processedArray}</>;
-    }
-    
-    // Process normal text content
-    if (typeof input === 'string') {
-        return processTextContent(input, '0', sep, animation, animationDuration, animationTimingFunction, animationIterationCount);
-    }
-    
-    // For any other type of input, just pass it through
-    return <>{input}</>;
-};
-
-// Separate function to process text content
-const processTextContent = (
-    text: string, 
-    keyPrefix: string, 
-    sep: string, 
-    animation: string, 
-    animationDuration: string, 
-    animationTimingFunction: string, 
-    animationIterationCount: string
-) => {
-    // Skip processing if no animation
-    if (animation === 'none' || !animation) {
-        return <>{text}</>;
-    }
-
-    // Animation styles for tokens
-    const baseStyle = {
+    // Apply animation style only once instead of creating it repeatedly
+    const animationStyle = React.useMemo(() => ({
         animationName: animation,
         animationDuration,
-        animationTimingFunction,
+        animationTimingFunction, 
         animationIterationCount,
+        whiteSpace: 'pre-wrap',
         display: 'inline-block',
-    };
+    }), [animation, animationDuration, animationTimingFunction, animationIterationCount]);
 
-    // Break text into tokens
-    let tokens: string[] = [];
-    
-    if (sep === 'word') {
-        tokens = text.split(/(\s+)/).filter(Boolean);
-    } else if (sep === 'char') {
-        tokens = Array.from(text);
-    } else if (sep === 'diff') {
-        tokens = [text]; // For diff mode, treat as single token
-    } else {
-        throw new Error('Invalid separator: must be "word", "char", or "diff"');
-    }
-    
-    // Make sure line breaks are handled separately
-    const processedTokens: React.ReactNode[] = [];
-    let currentIndex = 0;
-    
-    tokens.forEach((token, i) => {
-        // Handle line breaks specially
-        if (token === '\n') {
-            processedTokens.push(<br key={`${keyPrefix}-${currentIndex}`} />);
-            currentIndex++;
-            return;
-        }
-        
-        // Handle whitespace
-        const isWhitespace = /^\s+$/.test(token);
-        
-        // Pair spaces with the following word to avoid leading spaces in wrapped lines
-        if (isWhitespace && i < tokens.length - 1 && !/^\s+$/.test(tokens[i+1]) && tokens[i+1] !== '\n') {
-            const space = token;
-            const word = tokens[i+1];
-            
-            processedTokens.push(
-                <span key={`${keyPrefix}-${currentIndex}`} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
-                    <span style={{ ...baseStyle, whiteSpace: 'pre' }}>{space}</span>
-                    <span style={{ ...baseStyle, whiteSpace: 'normal' }}>{word}</span>
-                </span>
-            );
-            
-            currentIndex++;
-            tokens[i+1] = ''; // Mark the next token as processed
-        } 
-        // Handle regular tokens (that haven't been paired)
-        else if (token && token !== '') {
-            processedTokens.push(
-                <span 
-                    key={`${keyPrefix}-${currentIndex}`} 
-                    style={{
-                        ...baseStyle,
-                        whiteSpace: isWhitespace ? 'pre' : 'normal'
-                    }}
-                >
-                    {token}
-                </span>
-            );
-            currentIndex++;
-        }
-    });
-    
-    // Container style for proper text flow
-    const containerStyle: React.CSSProperties = {
-        display: 'inline',
-        wordWrap: 'break-word',
-        wordBreak: 'normal'
-    };
-    
     return (
-        <span style={containerStyle}>
-            {processedTokens}
-        </span>
+        <>
+            {tokens?.map((token, index) => {
+                // Determine the key and text based on token type
+                let key = index;
+                let text = '';
+
+                if (isTokenWithSource(token)) {
+                    key = token.source;
+                    text = token.text;
+                } else if (typeof token === 'string') {
+                    key = index;
+                    text = token;
+                } else if (React.isValidElement(token)) {
+                    key = index;
+                    text = '';
+                    return React.cloneElement(token, { key });
+                }
+                
+                return (
+                    <span key={key} style={animationStyle}>
+                        {text}
+                    </span>
+                );
+            })}
+        </>
     );
 };
 
-export default React.memo(TokenizedText);
+export default React.memo(TokenizedText); // Memoize the entire component to prevent unnecessary rerenders

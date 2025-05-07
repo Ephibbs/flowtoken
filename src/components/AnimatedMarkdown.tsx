@@ -101,6 +101,8 @@ const MarkdownAnimateText: React.FC<MarkdownAnimateTextProps> = ({
         
         return text.map((item, index) => {
             if (typeof item === 'string') {
+                // Strings are handled by MemoizedText (SplitText), which now has the logic
+                // to avoid animating specific HTML strings like "<br>", "<ul>", etc.
                 return (
                     <MemoizedText
                         key={`text-${index}`}
@@ -111,10 +113,24 @@ const MarkdownAnimateText: React.FC<MarkdownAnimateTextProps> = ({
                         sep={sep}
                     />
                 );
-            } else {
-                // Return non-string, non-element inputs with animation
+            } else if (React.isValidElement(item)) {
+                // Check if the React element is one of the types we don't want to animate
+                const noAnimateElementTypes: Array<React.ElementType> = ['br', 'ul', 'ol', 'td', 'th'];
+                let typeName = item.type
+                if (typeof typeName === 'function') {
+                    typeName = typeName.name
+                }
+                if (typeof typeName === 'string' && noAnimateElementTypes.includes(typeName as React.ElementType)) {
+                    // Render these elements directly without an animation wrapper
+                    return item;
+                }
+                // For other React elements, wrap them in animation span if they are not container elements
+                // whose children are already animated by the `components` prop of ReactMarkdown
+                // This else block might still wrap elements if they are not explicitly handled
+                // by the ReactMarkdown components mapping (e.g. custom components not passing animateText to children)
+                // For standard HTML elements, the `components` mapping should handle animation of children.
                 return (
-                    <span key={`other-${index}`} style={{
+                    <span key={`other-element-${index}`} style={{
                         animationName: animation,
                         animationDuration,
                         animationTimingFunction,
@@ -126,6 +142,20 @@ const MarkdownAnimateText: React.FC<MarkdownAnimateTextProps> = ({
                     </span>
                 );
             }
+            // Fallback for other types (e.g. numbers, if they ever appear)
+            // This was the original 'else' block logic
+            return (
+                <span key={`other-${index}`} style={{
+                    animationName: animation,
+                    animationDuration,
+                    animationTimingFunction,
+                    animationIterationCount: 1,
+                    whiteSpace: 'pre-wrap',
+                    display: 'inline-block',
+                }}>
+                    {item}
+                </span>
+            );
         });
     }, [animation, animationDuration, animationTimingFunction, sep, hidePartialCustomComponents]);
 

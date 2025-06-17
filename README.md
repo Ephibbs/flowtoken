@@ -122,7 +122,7 @@ This is an example of a custom component. <ArticlePreview triggerText="Github" t
 ### AnimatedMarkdown Props
 
 - **content** (string): The text to be displayed.  
-- **sep** (`"word"` | `"char"`): How to split and animate the content. Defaults to `"word"`.  
+- **sep** (`"diff"` | `"word"` | `"char"`): How to split and animate the content. Defaults to `"diff"`.  
 - **animation** (string | `null`): Name of the CSS animation to apply (e.g. `fadeIn`, `dropIn`). Set to `null` to disable animations on completed messages.  
 - **animationDuration** (string): CSS duration of the animation (e.g. `0.6s`).  
 - **animationTimingFunction** (string): CSS timing function for the animation (e.g. `ease`, `ease-in-out`).  
